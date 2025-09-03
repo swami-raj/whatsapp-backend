@@ -1,41 +1,46 @@
 name: Deploy WhatsApp Backend to EC2
 
 on:
-  push:
-    branches:
-      - main   # deployment branch
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'master'
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+    - name: Build with Maven
+      run: mvn clean package -DskipTests
 
-      - name: Upload JAR to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_KEY }}
-          source: "target/*.jar"
-          target: "/home/ec2-user/whatsapp.jar"
+    - name: Save EC2 private key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_KEY }}" > ~/.ssh/ec2_key.pem
+        chmod 600 ~/.ssh/ec2_key.pem
 
-      - name: Restart WhatsApp Backend on EC2
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            pkill -f whatsapp.jar || true
-            nohup java -Xmx1024m -jar /home/ec2-user/whatsapp.jar --server.port=8081 > /home/ec2-user/whatsapp.log 2>&1 &
+    - name: Copy JAR to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key.pem target/${{ secrets.WHATSAPP_JAR_NAME }} \
+        ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.WHATSAPP_PATH }}/
+
+    - name: Restart WhatsApp App on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          pkill -f ${{ secrets.WHATSAPP_JAR_NAME }} || true
+          nohup java -jar ${{ secrets.WHATSAPP_PATH }}/${{ secrets.WHATSAPP_JAR_NAME }} --server.port=8081 > whatsapp.log 2>&1 &
+        EOF
