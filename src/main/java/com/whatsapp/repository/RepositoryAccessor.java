@@ -17,10 +17,20 @@ public class RepositoryAccessor {
     @Getter private static MenuViewRoleRepository menuViewRoleRepository;
     @Getter private static UserTokenRepository userTokenRepository;
     @Getter private static DepartmentRoleRepository departmentRoleRepository;
+    @Getter private static CountryRepository countryRepository;
+    @Getter private static CountrySubscriptionRepository countrySubscriptionRepository;
+    @Getter private static BillingHistoryRepository billingHistoryRepository;
+    @Getter private static SubscriptionRepository subscriptionRepository;
 
     RepositoryAccessor(UserRepository userRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository,
                        CompanyRepository companyRepository, MenuListRepository menuListRepository, SubMenuListRepository subMenuListRepository,
-                       MenuViewRoleRepository menuViewRoleRepository, UserTokenRepository userTokenRepository, DepartmentRoleRepository departmentRoleRepository) {
+                       MenuViewRoleRepository menuViewRoleRepository, UserTokenRepository userTokenRepository, DepartmentRoleRepository departmentRoleRepository,
+                       CountryRepository countryRepository, CountrySubscriptionRepository countrySubscriptionRepository, BillingHistoryRepository billingHistoryRepository,
+                       SubscriptionRepository subscriptionRepository) {
+        RepositoryAccessor.subscriptionRepository = subscriptionRepository;
+        RepositoryAccessor.billingHistoryRepository = billingHistoryRepository;
+        RepositoryAccessor.countrySubscriptionRepository = countrySubscriptionRepository;
+        RepositoryAccessor.countryRepository = countryRepository;
         RepositoryAccessor.departmentRoleRepository = departmentRoleRepository;
         RepositoryAccessor.userRepository = userRepository;
         RepositoryAccessor.roleRepository = roleRepository;
