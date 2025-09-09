@@ -1,6 +1,7 @@
 package com.whatsapp.repository;
 
 import com.google.gson.Gson;
+import com.whatsapp.dao.BillingHistoryRepository;
 import com.whatsapp.security.CustomUserDetailsService;
 import com.whatsapp.services.*;
 import com.whatsapp.services.serviceImpl.GenericService;
@@ -20,6 +21,10 @@ public class ServiceAccessor {
     @Getter private static RoleService roleService;
     @Getter private static CompanyService companyServices;
     @Getter private static GenericService genericService;
+    @Getter private static CountryService countryService;
+    @Getter private static CountrySubscriptionService countrySubscriptionService;
+    @Getter private static BillingHistoryService billingHistoryService;
+    @Getter private static SubscriptionService subscriptionService;
 
     ServiceAccessor(AuthService authService,
                     ModelMapper modelMapper,
@@ -28,10 +33,13 @@ public class ServiceAccessor {
                     CustomUserDetailsService customUserDetailsService,
                     MenuService menuService,
                     SubMenuService subMenuService,
-//                    MenuViewRoleServices menuViewRoleServices,
                     DepartmentService departmentService,
                     RoleService roleService,
-                    CompanyService companyServices
+                    CompanyService companyServices,
+                    CountryService countryService,
+                    CountrySubscriptionService countrySubscriptionService,
+                    BillingHistoryService billingHistoryService,
+                    SubscriptionService subscriptionService
                     ) {
 
         ServiceAccessor.authService = authService;
@@ -41,10 +49,13 @@ public class ServiceAccessor {
         ServiceAccessor.customUserDetailsService = customUserDetailsService;
         ServiceAccessor.menuService = menuService;
         ServiceAccessor.subMenuService = subMenuService;
-//        ServiceAccessor.menuViewRoleServices = menuViewRoleServices;
         ServiceAccessor.departmentService = departmentService;
         ServiceAccessor.roleService = roleService;
         ServiceAccessor.companyServices = companyServices;
+        ServiceAccessor.countryService = countryService;
+        ServiceAccessor.countrySubscriptionService = countrySubscriptionService;
+        ServiceAccessor.billingHistoryService = billingHistoryService;
+        ServiceAccessor.subscriptionService = subscriptionService;
 
     }
 }

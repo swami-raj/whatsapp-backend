@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.whatsapp</groupId>
 	<artifactId>whatsapp-API</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Whatsapp-API</name>
 	<description>Whatsapp API</description>
+
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
 		<spring-ai.version>1.0.0-M7</spring-ai.version>
 		<openhtml.version>1.0.10</openhtml.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-	<dependencies>
 
+	<dependencies>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.420</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator-core</artifactId>
@@ -70,7 +58,6 @@
 			<version>1.10.0</version>
 		</dependency>
 		<dependency>
-			<!-- Required for PDF output. -->
 			<groupId>com.openhtmltopdf</groupId>
 			<artifactId>openhtmltopdf-pdfbox</artifactId>
 			<version>${openhtml.version}</version>
@@ -104,12 +91,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -191,25 +172,9 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>local-build-profile</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<spotless.goal>apply</spotless.goal>
-			</properties>
-		</profile>
-		<profile>
-			<id>git-build-profile</id>
-			<properties>
-				<spotless.goal>check</spotless.goal>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
+			<!-- ✅ FIXED compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -217,11 +182,9 @@
 				<configuration>
 					<source>17</source>
 					<target>17</target>
-					<verbose>true</verbose>
-					<parameters>true</parameters>
-					<compilerArgs>--enable-preview</compilerArgs>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -234,45 +197,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.diffplug.spotless</groupId>
-				<artifactId>spotless-maven-plugin</artifactId>
-				<version>2.43.0</version>
-				<configuration>
-					<java>
-						<includes>
-							<include>src/main/java/**/*.java</include> <!-- Check application code -->
-							<include>src/test/java/**/*.java</include> <!-- Check application tests code -->
-						</includes>
-						<googleJavaFormat>
-							<version>1.17.0</version>
-							<style>GOOGLE</style>
-							<formatJavadoc>false</formatJavadoc>
-						</googleJavaFormat>
-						<indent>
-							<tabs>true</tabs>
-							<spacesPerTab>2</spacesPerTab>
-						</indent>
-						<indent>
-							<spaces>true</spaces>
-							<spacesPerTab>4</spacesPerTab>
-						</indent>
-						<trimTrailingWhitespace/>
-						<endWithNewline/>
-						<importOrder />
-						<removeUnusedImports />
-					</java>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>${spotless.goal}</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-
 </project>
