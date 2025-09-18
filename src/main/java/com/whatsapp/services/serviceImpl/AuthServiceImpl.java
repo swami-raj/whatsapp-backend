@@ -247,8 +247,11 @@ public class AuthServiceImpl implements AuthService {
                         .email(user.getEmail())
                         .phone(user.getPhone())
                         .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                        .roleName(user.getName() != null ? user.getRole().getName() : null)
                         .departmentId(user.getDepartment() != null ? user.getDepartment().getId() : null)
+                        .departmentName(user.getDepartment() != null ? user.getDepartment().getName() : null)
                         .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
+                        .companyName(user.getCompany() != null ? user.getCompany().getName() : null)
                         .build();
                 userDetailResponses.add(userDetailResponse);
             }
@@ -283,8 +286,11 @@ public class AuthServiceImpl implements AuthService {
                     .email(user.getEmail())
                     .phone(user.getPhone())
                     .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                    .roleName(user.getRole() != null ? user.getRole().getName() : null)
                     .departmentId(user.getDepartment() != null ? user.getDepartment().getId() : null)
+                    .departmentName(user.getDepartment() != null ? user.getDepartment().getName() : null)
                     .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
+                    .companyName(user.getCompany() != null ? user.getCompany().getName() : null)
                     .build();
             response.setData(userDetailResponse);
             response.setCode(1);
