@@ -1,5 +1,8 @@
 package com.whatsapp.services.serviceImpl;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.whatsapp.dto.request.CandidatesRequest;
 import com.whatsapp.dto.response.CandidatesResponse;
 import com.whatsapp.dto.response.ResponseDto;
@@ -8,18 +11,36 @@ import com.whatsapp.entity.Candidates;
 import com.whatsapp.entity.User;
 import com.whatsapp.repository.RepositoryAccessor;
 import com.whatsapp.services.CandidatesService;
+import com.whatsapp.utils.CommonUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tomcat.jni.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CandidatesServiceImpl implements CandidatesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CandidatesServiceImpl.class);
+
+    @Autowired
+    private AmazonS3 amazonS3;
+
+    @Value("${bucket.name}")
+    private String bucketName;
+
+    @Value("${bucket.base.url}")
+    private String bucketBaseUrl;
 
     @Override
     public ResponseDto<CandidatesResponse> addCandidate(CandidatesRequest candidatesRequest) {
@@ -40,6 +61,7 @@ public class CandidatesServiceImpl implements CandidatesService {
                     .status(candidatesRequest.getStatus())
                     .currentCTC(candidatesRequest.getCurrentCTC())
                     .skills(candidatesRequest.getSkills())
+                    .company(optionalUser.get().getCompany())
                     .build();
             candidates.setCreatedBy(optionalUser.get());
             RepositoryAccessor.getCandidatesRepository().save(candidates);
@@ -82,7 +104,7 @@ public class CandidatesServiceImpl implements CandidatesService {
         LOGGER.info("[CandidatesServiceImpl >> getAllCandidate] Fetching all candidates");
         ResponseDto<List<CandidatesResponse>> response = new ResponseDto<>();
         try {
-            List<Candidates> candidatesList = RepositoryAccessor.getCandidatesRepository().findAll();
+            List<Candidates> candidatesList = RepositoryAccessor.getCandidatesRepository().findByIsActive(true);
             if (candidatesList.isEmpty()) {
                 response.setCode(0);
                 response.setMessage("candidates not found.");
@@ -157,6 +179,68 @@ public class CandidatesServiceImpl implements CandidatesService {
         }
         return response;
     }
+
+    @Override
+    public ResponseDto<String> uploadDocument(MultipartFile file, Long candidateId) {
+        LOGGER.info("[CandidatesServiceImpl >> uploadDocument] Uploading file: {}", file.getOriginalFilename());
+        ResponseDto<String> response = new ResponseDto<>();
+        UserDetailResponse userDetailResponse = (UserDetailResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser = RepositoryAccessor.getUserRepository().findByIdAndIsActive(userDetailResponse.getId(), true);
+        if (optionalUser.isEmpty()) {
+            response.setCode(0);
+            response.setMessage("User not found");
+            return response;
+        }
+
+        if (file == null || file.isEmpty()) {
+            response.setCode(0);
+            response.setMessage("Please upload a valid file.");
+            return response;
+        }
+
+        if (candidateId == null) {
+            response.setCode(0);
+            response.setMessage("Candidate ID is required.");
+            return response;
+        }
+
+        Optional<Candidates> optionalCandidates = RepositoryAccessor.getCandidatesRepository().findByIdAndIsActive(candidateId, true);
+        if (optionalCandidates.isEmpty()) {
+            response.setCode(0);
+            response.setMessage("Invalid candidate ID");
+            return response;
+        }
+
+        Candidates candidate = optionalCandidates.get();
+
+        try {
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            String UUIDFileName = UUID.randomUUID() + "." + extension;
+
+            File convertedFile = CommonUtils.convertMultiPartToFile(file);
+            String s3Key = "documents/" + candidateId + "/" + UUIDFileName;
+            String fileUrl = bucketBaseUrl + s3Key;
+
+            amazonS3.putObject(new PutObjectRequest(bucketName, s3Key, convertedFile).withCannedAcl(CannedAccessControlList.PublicRead));
+            convertedFile.delete();
+
+            candidate.setResumeLink(fileUrl);
+            RepositoryAccessor.getCandidatesRepository().save(candidate);
+
+            response.setData(fileUrl);
+            response.setCode(1);
+            response.setMessage("File uploaded and saved successfully.");
+
+        } catch (Exception e) {
+            LOGGER.error("[CandidatesServiceImpl >> uploadDocument] Error uploading file: {}", e.getMessage(), e);
+            response.setCode(0);
+            response.setMessage("Something went wrong. Please try again.");
+        }
+
+        return response;
+    }
+
+
     private CandidatesResponse mapToResponse(Candidates candidates) {
         return CandidatesResponse.builder()
                 .id(candidates.getId())
@@ -171,6 +255,7 @@ public class CandidatesServiceImpl implements CandidatesService {
                 .status(candidates.getStatus())
                 .currentCTC(candidates.getCurrentCTC())
                 .skills(candidates.getSkills())
+                .resumeLink(candidates.getResumeLink())
                 .build();
     }
 }

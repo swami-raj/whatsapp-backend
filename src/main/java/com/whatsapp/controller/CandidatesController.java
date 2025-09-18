@@ -7,6 +7,7 @@ import com.whatsapp.dto.response.CountryResponse;
 import com.whatsapp.dto.response.ResponseDto;
 import com.whatsapp.repository.ServiceAccessor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,4 +38,10 @@ public class CandidatesController {
     ResponseDto<String> deleteDepartment(@PathVariable Long id) {
         return ServiceAccessor.getCandidatesService().deleteCandidate(id);
     }
+
+    @PostMapping("/upload-single")
+    public ResponseDto<String> uploadDocument(@RequestParam("file") MultipartFile file, @RequestParam Long candidateId) {
+        return ServiceAccessor.getCandidatesService().uploadDocument(file, candidateId);
+    }
+
 }

@@ -17,7 +17,6 @@ public class CandidatesRequest {
     private String expectedCTC;
     private String noticePeriod;
     private String skills;
-    private String resumeLink;
     private String status;
     private String linkedInProfile;
     private String notes;

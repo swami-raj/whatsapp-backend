@@ -1,6 +1,8 @@
 package com.whatsapp.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Getter
@@ -22,4 +24,8 @@ public class Candidates extends BaseModel{
     private String status;
     private String linkedInProfile;
     private String notes;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 }
