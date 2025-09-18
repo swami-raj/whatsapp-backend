@@ -21,12 +21,15 @@ public class RepositoryAccessor {
     @Getter private static CountrySubscriptionRepository countrySubscriptionRepository;
     @Getter private static BillingHistoryRepository billingHistoryRepository;
     @Getter private static SubscriptionRepository subscriptionRepository;
+   // @Getter private static CloudTemplateRepository cloudTemplateRepository;
+    @Getter private static CandidatesRepository candidatesRepository;
 
     RepositoryAccessor(UserRepository userRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository,
                        CompanyRepository companyRepository, MenuListRepository menuListRepository, SubMenuListRepository subMenuListRepository,
                        MenuViewRoleRepository menuViewRoleRepository, UserTokenRepository userTokenRepository, DepartmentRoleRepository departmentRoleRepository,
                        CountryRepository countryRepository, CountrySubscriptionRepository countrySubscriptionRepository, BillingHistoryRepository billingHistoryRepository,
-                       SubscriptionRepository subscriptionRepository) {
+                       SubscriptionRepository subscriptionRepository, CandidatesRepository candidatesRepository) {
+        //RepositoryAccessor.cloudTemplateRepository = cloudTemplateRepository;
         RepositoryAccessor.subscriptionRepository = subscriptionRepository;
         RepositoryAccessor.billingHistoryRepository = billingHistoryRepository;
         RepositoryAccessor.countrySubscriptionRepository = countrySubscriptionRepository;
@@ -40,6 +43,7 @@ public class RepositoryAccessor {
         RepositoryAccessor.subMenuListRepository = subMenuListRepository;
         RepositoryAccessor.menuViewRoleRepository = menuViewRoleRepository;
         RepositoryAccessor.userTokenRepository = userTokenRepository;
+        RepositoryAccessor.candidatesRepository = candidatesRepository;
     }
 
 }

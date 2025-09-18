@@ -228,4 +228,98 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
+    @Override
+    public ResponseDto<List<UserDetailResponse>> getAllUsers() {
+        LOGGER.error("[UserServiceImpl >> getAllUsers] get all user");
+        ResponseDto<UserDetailResponse> response = new ResponseDto<>();
+        try {
+            List<User> userList = RepositoryAccessor.getUserRepository().findByIsActive(true);
+            if (userList.isEmpty()) {
+                response.setCode(0);
+                response.setMessage("user not found.");
+                return null;
+            }
+            List<UserDetailResponse> userDetailResponses = new ArrayList<>();
+            for (User user : userList) {
+                UserDetailResponse userDetailResponse = UserDetailResponse.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .phone(user.getPhone())
+                        .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                        .departmentId(user.getDepartment() != null ? user.getDepartment().getId() : null)
+                        .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
+                        .build();
+                userDetailResponses.add(userDetailResponse);
+            }
+            ResponseDto<List<UserDetailResponse>> responseDto = new ResponseDto<>();
+            responseDto.setData(userDetailResponses);
+            responseDto.setCode(1);
+            responseDto.setMessage("user fetched successfully");
+            return responseDto;
+        } catch (Exception e) {
+            LOGGER.error("[UserServiceImpl >> getAllUsers] Exception occurred while fetching user", e);
+            response.setCode(0);
+            response.setMessage("Internal server error");
+            return null;
+        }
+    }
+
+    @Override
+    public ResponseDto<UserDetailResponse> getUserById(Long id) {
+        LOGGER.info("[UserServiceImpl >> getUserById] Fetching user by id: {}", id);
+        ResponseDto<UserDetailResponse> response = new ResponseDto<>();
+        try {
+            Optional<User> optionalUser = RepositoryAccessor.getUserRepository().findByIdAndIsActive(id, true);
+            if (optionalUser.isEmpty()) {
+                response.setCode(0);
+                response.setMessage("user not found.");
+                return response;
+            }
+            User user = optionalUser.get();
+            UserDetailResponse userDetailResponse = UserDetailResponse.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .phone(user.getPhone())
+                    .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                    .departmentId(user.getDepartment() != null ? user.getDepartment().getId() : null)
+                    .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
+                    .build();
+            response.setData(userDetailResponse);
+            response.setCode(1);
+            response.setMessage("user fetched successfully");
+        } catch (Exception e) {
+            LOGGER.error("[UserServiceImpl >> getUserById] Exception occurred while fetching user", e);
+            response.setCode(0);
+            response.setMessage("Internal server error");
+        }
+        return response;
+    }
+
+    @Override
+    public ResponseDto<String> deleteUser(Long id) {
+        LOGGER.info("[UserServiceImpl >> deleteUser] Deleting user by id: {}", id);
+        ResponseDto<String> response = new ResponseDto<>();
+        try {
+            Optional<User> optionalUser = RepositoryAccessor.getUserRepository().findByIdAndIsActive(id, true);
+            if (optionalUser.isEmpty()) {
+                response.setCode(0);
+                response.setMessage("user not found.");
+                return response;
+            }
+            User user = optionalUser.get();
+            user.setActive(false);
+            RepositoryAccessor.getUserRepository().save(user);
+            response.setData("User deleted successfully");
+            response.setCode(1);
+            response.setMessage("user deleted successfully");
+        } catch (Exception e) {
+            LOGGER.error("[UserServiceImpl >> deleteUser] Exception occurred while deleting user", e);
+            response.setCode(0);
+            response.setMessage("Internal server error");
+        }
+        return response;
+    }
+
 }

@@ -6,10 +6,9 @@ import com.whatsapp.dto.response.ResponseDto;
 import com.whatsapp.dto.response.UserDetailResponse;
 import com.whatsapp.repository.ServiceAccessor;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("auth")
@@ -24,4 +23,20 @@ public class AuthController {
     public ResponseDto<UserDetailResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
         return ServiceAccessor.getAuthService().login(userLoginRequest);
     }
+
+    @GetMapping("get-all")
+    public ResponseDto<List<UserDetailResponse>> getAllUsers( ) {
+        return ServiceAccessor.getAuthService().getAllUsers();
+    }
+
+    @GetMapping("getById/{id}")
+    public ResponseDto<UserDetailResponse> getUserById(@PathVariable Long id) {
+        return ServiceAccessor.getAuthService().getUserById(id);
+    }
+
+    @DeleteMapping("deleteById/{id}")
+    public ResponseDto<String> deleteUser(@PathVariable Long id) {
+        return ServiceAccessor.getAuthService().deleteUser(id);
+    }
+
 }

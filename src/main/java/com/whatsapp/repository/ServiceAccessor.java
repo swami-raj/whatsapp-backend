@@ -25,6 +25,8 @@ public class ServiceAccessor {
     @Getter private static CountrySubscriptionService countrySubscriptionService;
     @Getter private static BillingHistoryService billingHistoryService;
     @Getter private static SubscriptionService subscriptionService;
+//    @Getter private static CloudTemplateService cloudTemplateService;
+    @Getter private static CandidatesService candidatesService;
 
     ServiceAccessor(AuthService authService,
                     ModelMapper modelMapper,
@@ -39,7 +41,9 @@ public class ServiceAccessor {
                     CountryService countryService,
                     CountrySubscriptionService countrySubscriptionService,
                     BillingHistoryService billingHistoryService,
-                    SubscriptionService subscriptionService
+                    SubscriptionService subscriptionService,
+//                    CloudTemplateService cloudTemplateService,
+                    CandidatesService candidatesService
                     ) {
 
         ServiceAccessor.authService = authService;
@@ -55,7 +59,9 @@ public class ServiceAccessor {
         ServiceAccessor.countryService = countryService;
         ServiceAccessor.countrySubscriptionService = countrySubscriptionService;
         ServiceAccessor.billingHistoryService = billingHistoryService;
-        ServiceAccessor.subscriptionService = subscriptionService;
+       ServiceAccessor.subscriptionService = subscriptionService;
+//        ServiceAccessor.cloudTemplateService = cloudTemplateService;
+        ServiceAccessor.candidatesService = candidatesService;
 
     }
 }
