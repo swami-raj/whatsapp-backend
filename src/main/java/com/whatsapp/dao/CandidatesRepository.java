@@ -12,5 +12,5 @@ public interface CandidatesRepository extends JpaRepository<Candidates,Long> {
 
     Optional<Candidates> findByIdAndIsActive(Long id, boolean isActive);
 
-    List<Candidates> findByIsActive(boolean b);
+    List<Candidates> findByIsActive(boolean isActive);
 }
