@@ -118,7 +118,7 @@ public class TicketServiceImpl implements TicketService {
         LOGGER.info("[TicketServiceImpl >> getAllTicket] get all tickets");
         ResponseDto<List<TicketResponse>> response = new ResponseDto<>();
         try {
-            List<Ticket> tickets = RepositoryAccessor.getTicketRepository().findAllByIsActive(true);
+            List<Ticket> tickets = RepositoryAccessor.getTicketRepository().findByIsActive(true);
             if(tickets.isEmpty()){
                 response.setCode(0);
                 response.setMessage("tickets not found.");

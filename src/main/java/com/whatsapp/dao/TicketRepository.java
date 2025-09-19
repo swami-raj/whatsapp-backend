@@ -16,4 +16,6 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     List<Ticket> findAllByIsActive(boolean isActive);
 
     Optional<Ticket> findTopByCompanyOrderByIdDesc(Company company);
+
+    List<Ticket> findByIsActive(boolean isActive);
 }
