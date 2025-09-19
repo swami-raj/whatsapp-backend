@@ -71,7 +71,7 @@ public class TicketServiceImpl implements TicketService {
                     .remarks(ticketRequest.getRemarks())
                     .status(ticketRequest.getStatus())
                     .company(company)
-                    .nextFollowUpDate(DateTime.parse(ticketRequest.getNextFollowUpDate()))
+                    .nextFollowUpDate(ticketRequest.getNextFollowUpDate())
                     .ticketId(ticketId)
                     .build();
 
@@ -170,7 +170,7 @@ public class TicketServiceImpl implements TicketService {
             ticket.setCandidate(optionalCandidates.get());
             ticket.setRemarks(ticketRequest.getRemarks());
             ticket.setStatus(ticketRequest.getStatus());
-            ticket.setNextFollowUpDate(DateTime.parse(ticketRequest.getNextFollowUpDate()));
+            ticket.setNextFollowUpDate(ticketRequest.getNextFollowUpDate());
             ticket.setUpdatedBy(optionalUser.get());
             RepositoryAccessor.getTicketRepository().save(ticket);
             response.setData(mapToResponse(ticket));
@@ -213,6 +213,8 @@ public class TicketServiceImpl implements TicketService {
                 .id(ticket.getId())
                 .candidateId(ticket.getCandidate().getId())
                 .candidateName(ticket.getCandidate().getName())
+                .candidateEmail(ticket.getCandidate().getEmail())
+                .candidatePhone(ticket.getCandidate().getPhone())
                 .userId(ticket.getUser().getId())
                 .assignedTo(ticket.getUser().getName())
                 .status(ticket.getStatus())

@@ -29,7 +29,7 @@ public class Ticket extends BaseModel{
 
     private String remarks;
 
-    private DateTime nextFollowUpDate;
+    private String nextFollowUpDate;
 
     private String ticketId;
 
