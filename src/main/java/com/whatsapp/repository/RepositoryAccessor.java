@@ -23,13 +23,15 @@ public class RepositoryAccessor {
     @Getter private static SubscriptionRepository subscriptionRepository;
    // @Getter private static CloudTemplateRepository cloudTemplateRepository;
     @Getter private static CandidatesRepository candidatesRepository;
+    @Getter private static TicketRepository ticketRepository;
 
     RepositoryAccessor(UserRepository userRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository,
                        CompanyRepository companyRepository, MenuListRepository menuListRepository, SubMenuListRepository subMenuListRepository,
                        MenuViewRoleRepository menuViewRoleRepository, UserTokenRepository userTokenRepository, DepartmentRoleRepository departmentRoleRepository,
                        CountryRepository countryRepository, CountrySubscriptionRepository countrySubscriptionRepository, BillingHistoryRepository billingHistoryRepository,
-                       SubscriptionRepository subscriptionRepository, CandidatesRepository candidatesRepository) {
+                       SubscriptionRepository subscriptionRepository, CandidatesRepository candidatesRepository, TicketRepository ticketRepository) {
         //RepositoryAccessor.cloudTemplateRepository = cloudTemplateRepository;
+        RepositoryAccessor.ticketRepository = ticketRepository;
         RepositoryAccessor.subscriptionRepository = subscriptionRepository;
         RepositoryAccessor.billingHistoryRepository = billingHistoryRepository;
         RepositoryAccessor.countrySubscriptionRepository = countrySubscriptionRepository;
